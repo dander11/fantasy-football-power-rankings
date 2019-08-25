@@ -1,3 +1,18 @@
 env:
   matrix:
     secure: XBiBkE+USzXNdxBosWNPAwiYmMx8RhBo2YwFsTafPeMYFgvG5/xBSU9ZIcreIFdljBHoPBdP65xF5v/p5IvaDrcYLT5eFV+OXsRTOfyo/MCQQTL1DDTKxQwZMD67k5en3ELETanzB0qz7Yh4fNiRKeGM1HmH2E+IwnQbPworAZKOy5DBIdwAhsh1qM7qsp2AdAIkZDdIAHO85blgYi7kwrk9kjr74pUUpouVd8YRw1IqcmbiiOi4VwxdPPOpBdaeUMkcIEYPnXD5ulZ1gOV0p9Q2SCvle2QU4mYi6zo4SHDsqtw1e04fofuGXW89NynUi6X03lMME+dOn7pkBEc/iLP2DasqbGfouaP1pMQfWL89mq06qSHQNDvtZKLbXG6C9BNmojWFMTmPYT2eqYmncGUAD6d/yJ1uSmWQl0GbcdDUTqjJXhUSe2JG3+vcS4mnQCQ6gTpL81l0S5p+169vF1gwLeB8DDBafnTFvYsGwrFYe/10u8E7O/6+35MXtSWUr1a4U271ED2tjbBLfkJHHhtKs00/VbPdBPdTC16CpmD+Nu6YUC5VTrrOW6HoYEJTpj4+ELpSF7TiKmLzeHdzeQc2dPFc7gVPCqYN04ONT76Yr+ybJ7vwHfLXUp55d3pnXNH4sgn47XaKPDclvje9jLcXjlbxuqOzP/kg9NYiBpE=
+language: node_js
+node_js:
+ - "node"
+
+cache: npm
+
+script: npm run build
+
+deploy:
+ provider: pages
+ skip_cleanup: true
+ github_token: $GITHUB_TOKEN
+ local_dir: dist
+ on:
+   branch: master
