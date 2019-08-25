@@ -1,28 +1,295 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <PowerRankings v-bind:rankings="rankings" v-bind:week="week" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import PowerRankings from "./components/PowerRankings.vue";
+import { getPowerRankings } from "./api/api.js";
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    HelloWorld
+    PowerRankings
+  },
+  data() {
+    return {
+      rankings: [],
+      week: 0
+    };
+  },
+  created() {
+    this.getRankings("118157", "2019");
+  },
+  methods: {
+    getRankings: function(leagueId, seasonId) {
+      getPowerRankings(leagueId, seasonId).then(value => {
+        for (let index = 0; index < value.teams.length; index++) {
+          const element = value.teams[index];
+          element.ranking = index + 1;
+          element.description = "description";
+          value.teams[index] = element;
+        }
+        this.rankings = value.teams;
+        this.week = value.week;
+      });
+    }
   }
-}
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+#powerRanking {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid white;
+  border-radius: 3px;
+  font: normal 10px verdana;
+}
+#powerRanking table {
+  border: 0px solid black;
+  font-size: 12px;
+  width: 100%;
+  border-collapse: collapse;
+}
+#powerRanking table tr {
+  background-color: #f8f8f2;
+}
+#powerRanking table tr:nth-child(odd) {
+  background-color: #f2f2e8;
+}
+#powerRanking table tr:nth-child(2) {
+  background-color: #6dbb75;
+}
+#powerRanking table tr:first-child {
+  background-color: #1d7225;
+  color: white;
+  text-align: center;
+}
+th {
+  border-radius: 3px 3px 0px 0px;
+}
+#powerRanking table th h3 {
+  margin: 0px;
+}
+tr.rank {
+  height: 60px;
+  vertical-align: middle;
+}
+tr.rank td:first-child {
+  font-size: 20px;
+  text-align: center;
+  vertical-align: middle;
+  width: 10%;
+}
+.ranking {
+  border-radius: 50px;
+  color: white;
+  padding: 0px;
+  margin: auto;
+}
+tr.rank td:nth-child(2) {
+  /* width: 100px; */
+  vertical-align: middle;
+  text-align: center;
+  display: inline-block;
+}
+tr.rank td:nth-child(3) {
+  width: 10%;
+  vertical-align: middle;
+}
+tr.rank td:nth-child(4) {
+  width: 20%;
+  vertical-align: middle;
+}
+tr.rank td:nth-child(5) {
+  width: 40%;
+  vertical-align: middle;
+  font-size: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.teamPicture {
+  height: 100%;
+  display: table-cell;
+  padding: 5px 10px;
+}
+
+img {
+  max-width: 300px;
+}
+.teamPicture img {
+  position: relative;
+  max-width: 150px;
+  /* max-height: 100px;*/
+  vertical-align: middle;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.manager-name {
+  font-size: 13px;
+  white-space: nowrap;
+  top: -5px;
+  position: relative;
+}
+.manager-name a {
+  text-decoration: none !important;
+  color: #225db7 !important;
+}
+.team-record {
+  color: #888;
+}
+.up {
+  border-bottom: 8px solid green;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  width: 0px;
+  position: relative;
+  left: 17px;
+  top: 6px;
+}
+.down {
+  border-top: 8px solid red;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  width: 0px;
+  position: relative;
+  top: 7px;
+  left: 17px;
+}
+.no-change {
+  border-top: 8px solid transparent;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+.delta-div {
+  position: relative;
+  right: -5px;
+}
+.delta {
+  width: 25px;
+  position: relative;
+  font-size: 17px;
+  line-height: 20px;
+  top: -9px;
+  left: 26px;
+}
+.delta-up {
+  color: green;
+}
+.delta-down {
+  color: red;
+}
+.last-weeks-position {
+  color: #888;
+  font-size: 10px;
+  top: -5px;
+  position: relative;
+}
+.center {
+  text-align: center;
+}
+.manager-name-under-team {
+  font-size: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  white-space: nowrap;
+}
+.team-name {
+  white-space: nowrap;
+  font-weight: bold;
+  font-size: 11px;
+}
+tr.rank:nth-child(3) .ranking {
+  background: #1d7225;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+}
+
+tr.rank:nth-child(4) .ranking {
+  background: #1d7225;
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
+}
+
+tr.rank:nth-child(5) .ranking {
+  background: #1d7225;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+}
+
+tr.rank:nth-child(6) .ranking {
+  background: #1d7225;
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+}
+
+tr.rank:nth-child(7) .ranking {
+  background: #1d7225;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+
+tr.rank:nth-child(8) .ranking {
+  background: #1d7225;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+}
+
+tr.rank:nth-child(9) .ranking {
+  background: firebrick;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+}
+
+tr.rank:nth-child(10) .ranking {
+  background: firebrick;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+}
+
+tr.rank:nth-child(11) .ranking {
+  background: firebrick;
+  width: 45px;
+  height: 45px;
+  line-height: 45px;
+}
+
+tr.rank:nth-child(12) .ranking {
+  background: firebrick;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+}
+
+tr.rank:nth-child(13) .ranking {
+  background: firebrick;
+  width: 55px;
+  height: 55px;
+  line-height: 55px;
+}
+
+tr.rank:nth-child(14) .ranking {
+  background: firebrick;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
 }
 </style>
