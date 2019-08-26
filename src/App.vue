@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="container">
     <PowerRankings v-bind:rankings="rankings" v-bind:week="week" />
   </div>
 </template>
@@ -7,10 +7,12 @@
 <script>
 import PowerRankings from "./components/PowerRankings.vue";
 import { getPowerRankings } from "./api/api.js";
+import CaptureButton from "./components/PictureButton.vue";
 export default {
   name: "app",
   components: {
-    PowerRankings
+    PowerRankings,
+    CaptureButton
   },
   data() {
     return {
@@ -19,11 +21,11 @@ export default {
     };
   },
   created() {
-    this.getRankings("118157", "2019");
+    this.getRankings("118157", "2018", "14");
   },
   methods: {
-    getRankings: function(leagueId, seasonId) {
-      getPowerRankings(leagueId, seasonId).then(value => {
+    getRankings: function(leagueId, seasonId, week) {
+      getPowerRankings(leagueId, seasonId, week).then(value => {
         for (let index = 0; index < value.teams.length; index++) {
           const element = value.teams[index];
           element.ranking = index + 1;
@@ -39,6 +41,10 @@ export default {
 </script>
 
 <style>
+.html2canvas-container {
+  width: 3000px !important;
+  height: 3000px !important;
+}
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

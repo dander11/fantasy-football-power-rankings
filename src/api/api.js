@@ -8,13 +8,13 @@ const cookieJar = new tough.CookieJar();
 axios.defaults.jar = cookieJar;
 axios.defaults.withCredentials = true;
 
-export const getPowerRankings = async (leagueId, seasonId) => {
+export const getPowerRankings = async (leagueId, seasonId, week) => {
     const { data } = await axios.get(
-        `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${seasonId}/segments/0/leagues/${leagueId}?view=mMatchupScore&view=mStatus&view=mSettings&view=mTeam&view=modular&view=mNav`
+        `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${seasonId}/segments/0/leagues/${leagueId}?scoringPeriodId=${week}&view=mMatchupScore&view=mStatus&view=mSettings&view=mTeam&view=modular&view=mNav`
     );
     //Grab all of the scores from each of the games play in the regular season
     const weeklyResults = data.schedule
-        .filter(game => game.playoffTierType === 'NONE' && game.home.totalPoints > 0)
+        .filter(game => game.home.totalPoints > 0 && game.matchupPeriodId <= parseInt(week))
         .map(game => {
             if (game.away) {
                 return {
@@ -42,10 +42,12 @@ export const getPowerRankings = async (leagueId, seasonId) => {
         }, {});
 
     //Move scores into array of arrays
-    const weeklyScores = [];
+    var weeklyScores = [];
     for (let i = 1; i <= Object.keys(weeklyResults).length; i++) {
         weeklyScores.push(weeklyResults[i]);
     }
+
+    const scoresCopy = JSON.parse(JSON.stringify(weeklyScores));
 
     //Sort the scores
     const sortedWeeklyScores = weeklyScores.map(week => {
@@ -61,12 +63,24 @@ export const getPowerRankings = async (leagueId, seasonId) => {
             const matchingTeam = week.find(teamScore => teamScore.teamId === team.id);
             return matchingTeam ? matchingTeam.score : 0;
         });
-        return {
+
+        var teamWins = 0;
+        scoresCopy.forEach(week => {
+            var scoreIndex = week.scores.findIndex(teamScore => teamScore.teamId === team.id);
+            var opponentIndex = scoreIndex % 2 === 0 || scoreIndex === 0 ? scoreIndex + 1 : scoreIndex - 1;
+            var score = week.scores[scoreIndex].score;
+            var opponentScore = week.scores[opponentIndex].score;
+            if (score > opponentScore) {
+                teamWins++;
+            }
+            return
+        });
+        var aTeam = {
             teamName: `${team.location} ${team.nickname}`,
             logoUrl: team.logo,
-            wins: team.record.overall.wins,
+            wins: teamWins,
             scores,
-            losses: team.record.overall.losses,
+            losses: week - teamWins,
             actualRecord: {
                 wins: team.record.overall.wins,
                 losses: team.record.overall.losses,
@@ -76,9 +90,11 @@ export const getPowerRankings = async (leagueId, seasonId) => {
             totalWins: wins.reduce((acc, x) => acc + x, 0),
             totalLosses: Object.keys(weeklyResults).length * (data.teams.length - 1) - wins.reduce((acc, x) => acc + x, 0)
         };
+        aTeam.powerRanking = getPowerRankingRating(aTeam);
+        return aTeam;
     });
 
-    teams.sort((a, b) => b.totalWins - a.totalWins);
+    teams.sort((a, b) => b.powerRanking - a.powerRanking);
     return {
         teams: teams,
         week: data.scoringPeriodId
@@ -93,4 +109,18 @@ function getOwner(ownerId, allOwners) {
         return element.id == ownerId;
     });
     return owner.firstName + " " + owner.lastName;
+}
+
+/*
+(Avg score x 6)+((high score + low score) x 1)+((winning % x 200) x 1)+((total win % x 200 x 2))
+*/
+function getPowerRankingRating(team) {
+    var sum = 0;
+    for (var i = 0; i < team.scores.length; i++) {
+        sum += parseInt(team.scores[i], 10); //don't forget to add the base
+    }
+    var avgScore = sum / team.scores.length;
+    var winPercentage = team.wins / (team.wins + team.losses);
+    var totalWinPercentage = team.totalWins / (team.totalWins + team.totalLosses);
+    return (avgScore * 6) + ((winPercentage * 200) * 2) + ((totalWinPercentage * 200) * 2)
 }

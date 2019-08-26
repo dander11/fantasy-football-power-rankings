@@ -9,7 +9,9 @@
     <td scope="col">
       <div class="team-name">{{teamName}}</div>
       <div class="manager-name-under-team">{{owner}}</div>
-      <div class="team-record">{{wins}}-{{losses}}-0</div>
+      <div class="team-record">Record: {{wins}}-{{losses}}</div>
+      <div class="team-record">Record vs league: {{totalWins}}-{{totalLosses}}</div>
+      <div class="team-record">Power Rating: {{Math.round(powerRanking)}}</div>
     </td>
     <td scope="col" align="center">
       <div class="delta-div">
@@ -67,7 +69,8 @@ export default {
     totalLosses: Number,
     description: String,
     ranking: Number,
-    owner: String
+    owner: String,
+    powerRanking: Number
   },
   data: function() {
     return {
