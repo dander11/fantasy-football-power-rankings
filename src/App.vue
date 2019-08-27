@@ -1,41 +1,15 @@
 <template>
   <div id="app" class="container">
-    <PowerRankings v-bind:rankings="rankings" v-bind:week="week" />
+    <PowerRankings />
   </div>
 </template>
 
 <script>
 import PowerRankings from "./components/PowerRankings.vue";
-import { getPowerRankings } from "./api/api.js";
-import CaptureButton from "./components/PictureButton.vue";
 export default {
   name: "app",
   components: {
-    PowerRankings,
-    CaptureButton
-  },
-  data() {
-    return {
-      rankings: [],
-      week: 0
-    };
-  },
-  created() {
-    this.getRankings("118157", "2018", "14");
-  },
-  methods: {
-    getRankings: function(leagueId, seasonId, week) {
-      getPowerRankings(leagueId, seasonId, week).then(value => {
-        for (let index = 0; index < value.teams.length; index++) {
-          const element = value.teams[index];
-          element.ranking = index + 1;
-          element.description = "description";
-          value.teams[index] = element;
-        }
-        this.rankings = value.teams;
-        this.week = value.week;
-      });
-    }
+    PowerRankings
   }
 };
 </script>
@@ -160,7 +134,7 @@ img {
   border-right: 4px solid transparent;
   width: 0px;
   position: relative;
-  left: 17px;
+  left: 10px;
   top: 6px;
 }
 .down {
@@ -170,7 +144,7 @@ img {
   width: 0px;
   position: relative;
   top: 7px;
-  left: 17px;
+  left: 10px;
 }
 .no-change {
   border-top: 8px solid transparent;

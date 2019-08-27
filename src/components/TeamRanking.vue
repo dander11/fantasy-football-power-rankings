@@ -20,20 +20,7 @@
       </div>
       <div class="last-weeks-position">
         Last Week:
-        <span
-          class="field-value"
-          v-show="!showField('lastWeek')"
-          @click="focusField('lastWeek')"
-        >{{lastWeek}}</span>
-        <input
-          v-model="lastWeek"
-          placeholder="Edit me"
-          v-show="showField('lastWeek')"
-          type="lastWeek"
-          class="field-value form-control"
-          @focus="focusField('lastWeek')"
-          @blur="blurField"
-        />
+        <span>{{prevRanking}}</span>
       </div>
     </td>
     <td class="center" scope="col">
@@ -70,12 +57,12 @@ export default {
     description: String,
     ranking: Number,
     owner: String,
-    powerRanking: Number
+    powerRanking: Number,
+    prevRanking: Number
   },
   data: function() {
     return {
       descriptionText: this.description,
-      lastWeek: "0",
       editField: ""
     };
   },
@@ -104,7 +91,9 @@ export default {
       return this[name] == "" || this.editField == name;
     },
     getDelta() {
-      return this.lastWeek == 0 ? 0 : parseInt(this.lastWeek) - this.ranking;
+      return this.prevRanking == 0
+        ? 0
+        : parseInt(this.prevRanking) - this.ranking;
     }
   }
 };

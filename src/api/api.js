@@ -1,6 +1,7 @@
 import axios from 'axios';
 import axiosCookieJarSupport from '@3846masa/axios-cookiejar-support';
 import tough from 'tough-cookie';
+import { async } from 'q';
 
 axiosCookieJarSupport(axios);
 const cookieJar = new tough.CookieJar();
@@ -8,7 +9,7 @@ const cookieJar = new tough.CookieJar();
 axios.defaults.jar = cookieJar;
 axios.defaults.withCredentials = true;
 
-export const getPowerRankings = async (leagueId, seasonId, week) => {
+const getRankings = async (leagueId, seasonId, week) => {
     const { data } = await axios.get(
         `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${seasonId}/segments/0/leagues/${leagueId}?scoringPeriodId=${week}&view=mMatchupScore&view=mStatus&view=mSettings&view=mTeam&view=modular&view=mNav`
     );
@@ -76,6 +77,7 @@ export const getPowerRankings = async (leagueId, seasonId, week) => {
             return
         });
         var aTeam = {
+            id: team.id,
             teamName: `${team.location} ${team.nickname}`,
             logoUrl: team.logo,
             wins: teamWins,
@@ -99,7 +101,7 @@ export const getPowerRankings = async (leagueId, seasonId, week) => {
         teams: teams,
         week: data.scoringPeriodId
     };
-};
+}
 
 function getOwner(ownerId, allOwners) {
     if (ownerId == null) {
@@ -122,5 +124,19 @@ function getPowerRankingRating(team) {
     var avgScore = sum / team.scores.length;
     var winPercentage = team.wins / (team.wins + team.losses);
     var totalWinPercentage = team.totalWins / (team.totalWins + team.totalLosses);
-    return (avgScore * 6) + ((winPercentage * 200) * 2) + ((totalWinPercentage * 200) * 2)
+    return (avgScore * 6) + ((winPercentage * 200) * 2.5) + ((totalWinPercentage * 200) * 1.5)
 }
+
+export const getPowerRankings = async (leagueId, seasonId, week) => {
+    const rankings = await getRankings(leagueId, seasonId, week);
+    const prevRankings = await getRankings(leagueId, seasonId, week - 1);
+    prevRankings.teams = prevRankings.teams.sort()
+    rankings.teams.forEach(team => {
+        team.prevRanking = prevRankings.teams.findIndex(aTeam => aTeam.id === team.id) + 1;
+
+    });
+    return {
+        teams: rankings.teams,
+        week: week
+    };
+};
