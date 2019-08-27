@@ -114,6 +114,7 @@ img {
   vertical-align: middle;
   object-fit: cover;
   border-radius: 10px;
+  min-width: 100px;
 }
 .manager-name {
   font-size: 13px;
