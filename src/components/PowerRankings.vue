@@ -1,8 +1,8 @@
 <template>
   <div id="powerRanking" class=".table-responsive">
-    <input v-model="leagueId" />
-    <input v-model="week" />
-    <input v-model="year" />
+    <input v-on:keyup.enter="updateRankings()" v-model="leagueId" />
+    <input v-on:keyup.enter="updateRankings()" v-model="week" />
+    <input v-on:keyup.enter="updateRankings()" v-model="year" />
     <button v-on:click="updateRankings()">update</button>
     <table class="table">
       <tbody>
