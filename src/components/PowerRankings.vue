@@ -1,5 +1,6 @@
 <template>
   <div id="powerRanking" class=".table-responsive">
+    <input v-model="leagueId" />
     <input v-model="week" />
     <input v-model="year" />
     <button v-on:click="updateRankings()">update</button>
@@ -42,11 +43,12 @@ export default {
     return {
       rankings: [],
       week: 0,
-      year: 2019
+      year: 2019,
+      leagueId: "118157"
     };
   },
   created() {
-    this.getRankings("118157", this.year, this.week);
+    this.getRankings(this.leagueId, this.year, this.week);
   },
   methods: {
     getRankings: function(leagueId, seasonId, week) {
@@ -62,7 +64,7 @@ export default {
       });
     },
     updateRankings: function() {
-      this.getRankings("118157", this.year, this.week);
+      this.getRankings(this.leagueId, this.year, this.week);
     }
   }
 };
