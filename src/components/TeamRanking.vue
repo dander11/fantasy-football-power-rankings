@@ -31,7 +31,15 @@
       >
         <div v-html="descriptionText"></div>
       </span>
-      <textarea
+      <wysiwyg
+        v-model="descriptionText"
+        v-show="showField('descriptionText')"
+        type="descriptionText"
+        class="field-value form-control description-text"
+        @focus="focusField('descriptionText')"
+      />
+      <button v-show="showField('descriptionText')" v-on:click="blurField">close</button>
+      <!-- <textarea
         v-model="descriptionText"
         placeholder="Edit me"
         v-show="showField('descriptionText')"
@@ -39,7 +47,7 @@
         class="field-value form-control description-text"
         @focus="focusField('descriptionText')"
         @blur="blurField"
-      />
+      />-->
     </td>
   </tr>
 </template>
@@ -104,4 +112,5 @@ export default {
   height: 400px;
   font-size: 0.8rem;
 }
+@import "~vue-wysiwyg/dist/vueWysiwyg.css";
 </style>
