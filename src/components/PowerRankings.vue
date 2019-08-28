@@ -1,33 +1,66 @@
 <template>
-  <div id="powerRanking" class=".table-responsive">
-    <input v-on:keyup.enter="updateRankings()" v-model="leagueId" />
-    <input v-on:keyup.enter="updateRankings()" v-model="week" />
-    <input v-on:keyup.enter="updateRankings()" v-model="year" />
-    <button v-on:click="updateRankings()">update</button>
-    <table class="table">
-      <tbody>
-        <tr>
-          <th colspan="5" scope="col">
-            <h3>Power Rankings: Week {{week}} {{year}}</h3>
-          </th>
-        </tr>
-        <tr>
-          <th class="center">
-            <b>Rank</b>
-          </th>
-          <th colspan="2" class="center">
-            <b>Team / Record</b>
-          </th>
-          <th class="center">
-            <b>Trending</b>
-          </th>
-          <th class="center">
-            <b>Comments</b>
-          </th>
-        </tr>
-        <TeamRanking v-for="rank in rankings" v-bind:key="rank.teamName" v-bind="rank" />
-      </tbody>
-    </table>
+  <div class=".table-responsive">
+    <div class="form-inline container row">
+      <div class="form-group col-sm-3">
+        <label for="leagueId">League ID:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="leagueId"
+          v-on:keyup.enter="updateRankings()"
+          v-model="leagueId"
+        />
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="week">Week:</label>
+        <input
+          type="number"
+          class="form-control"
+          id="week"
+          v-on:keyup.enter="updateRankings()"
+          v-model="week"
+        />
+      </div>
+      <div class="form-group col-sm-3">
+        <label for="year">Year:</label>
+        <input
+          type="number"
+          class="form-control"
+          id="year"
+          v-on:keyup.enter="updateRankings()"
+          v-model="year"
+        />
+      </div>
+      <div class="form-group col-sm-3">
+        <button class="btn btn-primary" v-on:click="updateRankings()">update</button>
+      </div>
+    </div>
+    <div id="powerRanking">
+      <table class="table" id="rankings-table">
+        <tbody>
+          <tr>
+            <th colspan="5" scope="col">
+              <h3>Power Rankings: Week {{week}} {{year}}</h3>
+            </th>
+          </tr>
+          <tr>
+            <th class="center">
+              <b>Rank</b>
+            </th>
+            <th colspan="2" class="center">
+              <b>Team / Record</b>
+            </th>
+            <th class="center">
+              <b>Trending</b>
+            </th>
+            <th class="center">
+              <b>Comments</b>
+            </th>
+          </tr>
+          <TeamRanking v-for="rank in rankings" v-bind:key="rank.teamName" v-bind="rank" />
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
