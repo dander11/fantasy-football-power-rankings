@@ -13,11 +13,11 @@ const options = {
 
   styles: [
     'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
-    'https://unpkg.com/kidlat-css/css/kidlat.css'
+    './assets/custom.css'
   ]
 }
 
-Vue.use(VueHtmlToPaper);
+Vue.use(VueHtmlToPaper, options);
 Vue.use(vClickOutside)
 Vue.use(wysiwyg, {});
 

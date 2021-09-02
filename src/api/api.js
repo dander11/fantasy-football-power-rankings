@@ -1,10 +1,9 @@
 import axios from 'axios';
 import axiosCookieJarSupport from '@3846masa/axios-cookiejar-support';
 import tough from 'tough-cookie';
-import { async } from 'q';
 
 axiosCookieJarSupport(axios);
-const cookieJar = new tough.CookieJar();
+const cookieJar = new tough.CookieJar(); 
 
 axios.defaults.jar = cookieJar;
 axios.defaults.withCredentials = true;
